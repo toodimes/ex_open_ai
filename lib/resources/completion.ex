@@ -21,7 +21,6 @@ defmodule ExOpenAi.Completion do
 
   def keep_it_simple(response, true) do
     response
-    |> IO.inspect(label: " #{List.last(String.split(__ENV__.file, "/"))}:#{__ENV__.line} ")
     |> Map.get(:choices)
     |> Enum.map(fn choice -> choice.text end)
   end

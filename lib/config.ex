@@ -20,7 +20,6 @@ defmodule ExOpenAi.Config do
   """
   def organization, do: from_env(:ex_open_ai, :organization)
 
-
   @doc """
   A wrapper around `Application.get_env/2`, providing automatic support for `{:system, "VARIABLE"}`.
   """

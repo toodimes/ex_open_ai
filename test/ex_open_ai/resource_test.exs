@@ -6,6 +6,7 @@ defmodule ExOpenAi.ResourceTest do
   defmodule TestResource do
     defstruct choices: nil, object: nil, id: nil
     use ExOpenAi.Resource, import: [:new, :create]
+    def keep_it_simple(response, true), do: Enum.map(response.choices, &Map.get(&1, :text))
   end
 
   test "only imports correct methods" do
@@ -31,5 +32,18 @@ defmodule ExOpenAi.ResourceTest do
       TestResource.create(prompt: "value")
       assert called(Api.create(TestResource, [prompt: "value"], []))
     end
+  end
+
+  test "keep_it_simple returns only list" do
+    response = %TestResource{
+      choices: [
+        %{index: 0, text: "hello"},
+        %{index: 1, text: "world"}
+      ],
+      id: "cmpl-123",
+      object: "text_completion"
+    }
+
+    assert ["hello", "world"] == TestResource.keep_it_simple(response, true)
   end
 end

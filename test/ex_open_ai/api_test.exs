@@ -10,6 +10,7 @@ defmodule ExOpenAi.ApiTest do
               model: nil,
               object: nil,
               created: nil
+
     def resource_name, do: "Resources"
     def keep_it_simple(response, true), do: List.first(response.choices)
     def keep_it_simple(response, _), do: response
@@ -18,11 +19,26 @@ defmodule ExOpenAi.ApiTest do
   doctest ExOpenAi.Api
 
   test ".create should return the resource if successful" do
-    json = json_response(%{choices: ["Hello, World!"], model: "davinci", object: "completion", created: 1620000000}, 200)
+    json =
+      json_response(
+        %{
+          choices: ["Hello, World!"],
+          model: "davinci",
+          object: "completion",
+          created: 1_620_000_000
+        },
+        200
+      )
 
     with_fixture(:post!, json, fn ->
-      assert {:ok, %Resource{choices: ["Hello, World!"], model: "davinci", object: "completion", created: 1620000000}} ==
-        Api.create(Resource, %{prompt: "value"})
+      assert {:ok,
+              %Resource{
+                choices: ["Hello, World!"],
+                model: "davinci",
+                object: "completion",
+                created: 1_620_000_000
+              }} ==
+               Api.create(Resource, %{prompt: "value"})
     end)
   end
 
@@ -31,7 +47,7 @@ defmodule ExOpenAi.ApiTest do
 
     with_fixture(:post!, json, fn ->
       assert {:error, %{"message" => "Resource couldn't be created."}, 500} ==
-        Api.create(Resource, %{prompt: "value"})
+               Api.create(Resource, %{prompt: "value"})
     end)
   end
 

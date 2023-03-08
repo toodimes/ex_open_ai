@@ -36,7 +36,8 @@ defmodule ExOpenAi.Parser do
       {:ok, %{"id" => "cmpl-uqkvlQyYK7bGYrRHQ0eXlWi7"}}
   """
   @spec parse(HTTPoison.Response.t(), module, boolean() | nil) :: success | error
-  def parse(response, map, _simple) when is_map(map) and not :erlang.is_map_key(:__struct__, map) do
+  def parse(response, map, _simple)
+      when is_map(map) and not :erlang.is_map_key(:__struct__, map) do
     handle_errors(response, fn body -> Jason.decode!(body) end)
   end
 

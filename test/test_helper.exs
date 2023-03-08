@@ -5,7 +5,8 @@ defmodule TestHelper do
   alias ExOpenAi.Api
   import Mock
 
-  def with_fixture(:post!, response, fun), do: with_fixture({:post!, fn _url, _options, _headers -> response end}, fun)
+  def with_fixture(:post!, response, fun),
+    do: with_fixture({:post!, fn _url, _options, _headers -> response end}, fun)
 
   def with_fixture(stub, fun) do
     with_mock Api, [:passthrough], [stub] do
