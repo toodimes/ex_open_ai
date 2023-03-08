@@ -12,6 +12,7 @@ defmodule ExOpenAi.URLGenerator do
       ["ExOpenAi", "Completion"] -> "https://api.openai.com/v1/completions"
       ["ExOpenAi", "NewImage"] -> "https://api.openai.com/v1/images/generations"
       ["ExOpenAi", "Chat"] -> "https://api.openai.com/v1/chat/completions"
+      _ -> "https://api.openai.com/v1"
     end
   end
 end

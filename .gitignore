@@ -25,4 +25,4 @@ ex_open_ai-*.tar
 # Temporary files, for example, from tests.
 /tmp/
 
-/config
+/config/*.secret.exs
