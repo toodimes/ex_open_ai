@@ -12,6 +12,9 @@ defmodule ExOpenAi.Api do
   alias ExOpenAi.URLGenerator, as: URL
   alias __MODULE__
 
+  # Image generation can take some time, so we need to increase the timeout
+  @default_timeout 25_000
+
   @type data :: map | list
 
   @doc """
@@ -28,7 +31,7 @@ defmodule ExOpenAi.Api do
 
     module
     |> URL.infer_url()
-    |> Api.post!(data, options)
+    |> Api.post!(data, options, recv_timeout: @default_timeout)
     |> Parser.parse(module, options[:simple])
   end
 

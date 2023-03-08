@@ -2,14 +2,13 @@ defmodule ExOpenAi.Completion do
   @moduledoc """
   Represents a completion request to the OpenAI API.
 
-  - [OpenAI API Docs](https://beta.openai.com/docs/api-reference/completions)
+  - [OpenAI API Docs](https://platform.openai.com/docs/api-reference/completions)
 
   ## Examples
   TODO: EXAMPLES
+
+  TODO: ENFORCE REQUIRED FIELDS
   """
-
-  # This is for responses from the API
-
   defstruct id: nil,
             object: nil,
             created: nil,
