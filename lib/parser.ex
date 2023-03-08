@@ -27,12 +27,12 @@ defmodule ExOpenAi.Parser do
 
   You can parse JSON into that module's struct like so:
       iex> response = %{body: "{ \\"id\\": \\"cmpl-uqkvlQyYK7bGYrRHQ0eXlWi7\\" }", status_code: 200}
-      ...> ExOpenAi.Parser.parse(response, Resource)
+      ...> ExOpenAi.Parser.parse(response, Resource, nil)
       {:ok, %Resource{id: "cmpl-uqkvlQyYK7bGYrRHQ0eXlWi7"}}
 
   You can also parse into a regular map if you want.
       iex> response = %{body: "{ \\"id\\": \\"cmpl-uqkvlQyYK7bGYrRHQ0eXlWi7\\" }", status_code: 200}
-      ...> ExOpenAi.Parser.parse(response, %{})
+      ...> ExOpenAi.Parser.parse(response, %{}, nil)
       {:ok, %{"id" => "cmpl-uqkvlQyYK7bGYrRHQ0eXlWi7"}}
   """
   @spec parse(HTTPoison.Response.t(), module, boolean() | nil) :: success | error
