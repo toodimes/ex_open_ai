@@ -11,7 +11,8 @@ defmodule ExOpenAi.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       package: package(),
-      description: description()
+      description: description(),
+      docs: docs()
     ]
   end
 
@@ -30,6 +31,19 @@ defmodule ExOpenAi.MixProject do
       {:jason, "~> 1.2"},
       {:mock, "~> 0.3", only: :test},
       {:dialyxir, "~> 1.1.0", only: [:dev, :test], runtime: false}
+    ]
+  end
+
+  defp docs do
+    [
+      extras: [
+        "LICENSE": [title: "License"],
+        "README.md": [title: "Overview"]
+      ],
+      main: "readme",
+      source_url: "https://github.com/toodimes/ex_open_ai",
+      source_ref: "v#{@version}",
+      formatters: ["html"]
     ]
   end
 

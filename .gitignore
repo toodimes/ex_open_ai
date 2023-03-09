@@ -26,3 +26,5 @@ ex_open_ai-*.tar
 /tmp/
 
 /config/*.secret.exs
+
+.DS_Store
