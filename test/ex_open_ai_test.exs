@@ -1,3 +1,2 @@
 defmodule ExOpenAiTest do
-
 end
