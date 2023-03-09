@@ -1,13 +1,17 @@
 defmodule ExOpenAi.MixProject do
   use Mix.Project
 
+  @version "0.1.0"
+
   def project do
     [
       app: :ex_open_ai,
-      version: "0.1.0",
+      version: @version,
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      package: package(),
+      description: description()
     ]
   end
 
@@ -24,14 +28,13 @@ defmodule ExOpenAi.MixProject do
       {:ex_doc, "~> 0.27", only: [:dev, :test], runtime: false},
       {:httpoison, "~> 2.0"},
       {:jason, "~> 1.2"},
-      {:mock, "~> 0.3", only: :test}
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
+      {:mock, "~> 0.3", only: :test},
+      {:dialyxir, "~> 1.1.0", only: [:dev, :test], runtime: false}
     ]
   end
 
   defp description do
-    "A client for the OpenAI API"
+    "An elixir client for the OpenAI API."
   end
 
   defp package do

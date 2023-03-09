@@ -54,7 +54,7 @@ defmodule ExOpenAi.Api do
     iex> ExOpenAi.Api.auth_header([], {"api123", nil})
     [{"Authorization", "Bearer api123"}]
   """
-  @spec auth_header(header :: list, options :: list) :: list
+  @spec auth_header(header :: list, tuple()) :: list
   def auth_header(headers, {api_key, organzation}) do
     headers
     |> put_header("Authorization", "Bearer #{api_key}")

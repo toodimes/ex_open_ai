@@ -7,12 +7,10 @@ defmodule ExOpenAi.Parser do
   @type http_status_code :: number
   @type key :: String.t()
   @type success :: {:ok, map}
-  @type success_list :: {:ok, [map], metadata}
   @type success_delete :: :ok
   @type error :: {:error, map, http_status_code}
 
   @type parsed_response :: success | error
-  @type parsed_list_response :: success_list | error
 
   @doc """
   Parse a response expected to contain a resource. If you pass in a

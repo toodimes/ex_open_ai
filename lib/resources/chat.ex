@@ -15,6 +15,7 @@ defmodule ExOpenAi.Chat do
 
   use ExOpenAi.Resource, import: [:new, :create]
 
+  @spec keep_it_simple(map, boolean()) :: list() | map()
   def keep_it_simple(response, true) do
     response
     |> Map.get(:choices)
