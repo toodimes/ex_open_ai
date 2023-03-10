@@ -1,6 +1,23 @@
 defmodule ExOpenAi.ChatRequest do
   @moduledoc """
   Represents a chat request to the OpenAI API.
+
+  - [OpenAI API Docs](https://platform.openai.com/docs/api-reference/chat/create)
+
+  This module allows you to add a message to the list of messages in the request as well as validate any request to the Chat resource.
+
+  ## Examples
+      iex> params = %{
+      ...>   model: "text-model",
+      ...>   messages: [
+      ...>     %{content: "hello"}
+      ...>   ]
+      ...> }
+      iex> ExOpenAi.ChatRequest.create(params)
+      {:ok, %ExOpenAi.Chat{...}}
+
+      iex> ExOpenAi.ChatRequest.do_append(params, %{content: "world"})
+      %{model: "text-model", messages: [%{content: "hello"}, %{content: "world"}]}
   """
 
   use ExOpenAi.Request

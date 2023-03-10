@@ -5,6 +5,17 @@ defmodule ExOpenAi.Chat do
   - [OpenAI API Docs](https://platform.openai.com/docs/api-reference/chat/create)
 
   ## Examples
+      iex> params = %{
+      ...>   model: "text-model",
+      ...>   messages: [
+      ...>     %{content: "hello"}
+      ...>   ]
+      ...> }
+      iex> ExOpenAi.Chat.create(params)
+      {:ok, %ExOpenAi.Chat{...}}
+
+      iex> ExOpenAi.Chat.create(%{})
+      {:error, %{}}
   """
 
   @type t :: %__MODULE__{

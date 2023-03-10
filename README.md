@@ -45,6 +45,16 @@ iex> ExOpenAi.Completion.create(%{model: "text-davinci-003", prompt: "Tell me a 
 {:ok, ["funny story one", "funny story 2", "funny story 3"]}
 ```
 
+## Requests
+Introducing ExOpenAi.Requests.
+
+These are modules to help you prepare and make requests that return resources. `ChatRequest` has the `do_append/2` function to add messages to the `Chat` resource. All resources have a `.create/1` function that will take in a map and validate that the required fields are present as well as remove any fields that OpenAi API will not like. 
+
+```elixir
+ExOpenAi.ChatRequest.create(%{model: "gpt-3.5-turbo", messages: [%{role: "system", content: "You are a good bot"}]})
+>> %ExOpenAi.Chat{id: "cmpl-123451234", choices: ...}
+```
+
 ## Supported Resources
 As of initial release the following resources are supported with more to come:
 
