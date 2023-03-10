@@ -55,6 +55,8 @@ ExOpenAi.ChatRequest.create(%{model: "gpt-3.5-turbo", messages: [%{role: "system
 >> %ExOpenAi.Chat{id: "cmpl-123451234", choices: ...}
 ```
 
+The `create` function inside the requests does not replace the `create` function inside of the Resource. Rather it is another way of calling it, if you want to use validations for the request.
+
 ## Supported Resources
 As of initial release the following resources are supported with more to come:
 
