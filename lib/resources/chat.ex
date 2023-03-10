@@ -7,6 +7,14 @@ defmodule ExOpenAi.Chat do
   ## Examples
   """
 
+  @type t :: %__MODULE__{
+        id: String.t(),
+        object: String.t(),
+        created: integer(),
+        choices: list(),
+        usage: map()
+      }
+
   defstruct id: nil,
             object: nil,
             created: nil,
