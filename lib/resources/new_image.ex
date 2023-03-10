@@ -10,6 +10,11 @@ defmodule ExOpenAi.NewImage do
   defstruct data: nil,
             created: nil
 
+  @type t :: %__MODULE__{
+          data: list(),
+          created: integer()
+        }
+
   use ExOpenAi.Resource, import: [:new, :create]
 
   def keep_it_simple(response, true) do

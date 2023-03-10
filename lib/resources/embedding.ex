@@ -10,6 +10,13 @@ defmodule ExOpenAi.Embedding do
             data: nil,
             usage: nil
 
+  @type t :: %__MODULE__{
+          object: String.t(),
+          model: String.t(),
+          data: list(),
+          usage: map()
+        }
+
   use ExOpenAi.Resource, import: [:new, :create]
 
   def keep_it_simple(response, true) do
