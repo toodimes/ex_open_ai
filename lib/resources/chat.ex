@@ -19,12 +19,12 @@ defmodule ExOpenAi.Chat do
   """
 
   @type t :: %__MODULE__{
-        id: String.t(),
-        object: String.t(),
-        created: integer(),
-        choices: list(),
-        usage: map()
-      }
+          id: String.t(),
+          object: String.t(),
+          created: integer(),
+          choices: list(),
+          usage: map()
+        }
 
   defstruct id: nil,
             object: nil,
