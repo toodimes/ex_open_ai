@@ -44,6 +44,17 @@ defmodule ExOpenAi.ChatRequest do
 
   @doc """
   Builds the chat messages by appending to the list of messages in the map.
+
+  ## Examples
+
+      iex> params = %{
+      ...>   model: "text-model",
+      ...>   messages: [
+      ...>     %{role: "system", content: "hello"}
+      ...>   ]
+      ...> }
+      iex> ExOpenAi.ChatRequest.do_append(params, %{role: "user", content: "world"})
+      %{model: "text-model", messages: [%{content: "hello"}, %{content: "world"}]}
   """
   @spec do_append(params :: map, message :: map) :: map
   def do_append(params, message) do
@@ -57,6 +68,17 @@ defmodule ExOpenAi.ChatRequest do
 
   @doc """
   Builds the create chat request and validates the required fields.
+
+  ## Examples
+
+      iex> params = %{
+      ...>   model: "text-model",
+      ...>   messages: [
+      ...>     %{role: "system", content: "hello"}
+      ...>   ]
+      ...> }
+      iex> ExOpenAi.ChatRequest.create(params)
+      {:ok, %ExOpenAi.Chat{...}}
   """
   @spec create(params :: map) :: {:ok, Chat.t()} | {:error, map}
   def create(params) do
