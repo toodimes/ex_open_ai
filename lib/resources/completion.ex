@@ -16,6 +16,15 @@ defmodule ExOpenAi.Completion do
             choices: nil,
             usage: nil
 
+  @type t :: %__MODULE__{
+          id: String.t(),
+          object: String.t(),
+          created: integer(),
+          model: String.t(),
+          choices: list(),
+          usage: map()
+        }
+
   use ExOpenAi.Resource, import: [:new, :create]
 
   def keep_it_simple(response, true) do
