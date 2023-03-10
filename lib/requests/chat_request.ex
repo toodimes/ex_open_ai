@@ -30,7 +30,8 @@ defmodule ExOpenAi.ChatRequest do
   """
   @spec do_append(params :: map, message :: map) :: map
   def do_append(params, message) do
-    messages = params
+    messages =
+      params
       |> Map.get(:messages)
       |> Enum.concat([message])
 

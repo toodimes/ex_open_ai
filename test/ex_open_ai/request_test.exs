@@ -11,9 +11,9 @@ defmodule ExOpenAi.RequestTest do
     }
 
     assert %{
-      model: "text-model",
-      messages: ["hello"]
-    } == TestRequest.do_change(params, messages: ["hello"])
+             model: "text-model",
+             messages: ["hello"]
+           } == TestRequest.do_change(params, messages: ["hello"])
   end
 
   test ".do_change overrides existing data with incoming" do
@@ -23,9 +23,9 @@ defmodule ExOpenAi.RequestTest do
     }
 
     assert %{
-      model: "text-model",
-      messages: ["world"]
-    } == TestRequest.do_change(params, messages: ["world"])
+             model: "text-model",
+             messages: ["world"]
+           } == TestRequest.do_change(params, messages: ["world"])
   end
 
   test ".has_required_fields? returns true if all required fields are present" do
@@ -53,9 +53,9 @@ defmodule ExOpenAi.RequestTest do
     }
 
     assert %{
-      model: "text-model",
-      messages: ["hello"]
-    } == TestRequest.prepare(params, [], [:model, :messages])
+             model: "text-model",
+             messages: ["hello"]
+           } == TestRequest.prepare(params, [], [:model, :messages])
   end
 
   test ".prepare returns the params with the required and optional fields" do
@@ -66,10 +66,10 @@ defmodule ExOpenAi.RequestTest do
     }
 
     assert %{
-      model: "text-model",
-      messages: ["hello"],
-      max_tokens: 10
-    } == TestRequest.prepare(params, [:max_tokens], [:model, :messages])
+             model: "text-model",
+             messages: ["hello"],
+             max_tokens: 10
+           } == TestRequest.prepare(params, [:max_tokens], [:model, :messages])
   end
 
   test ".prepare removes invalid fields" do
@@ -81,10 +81,10 @@ defmodule ExOpenAi.RequestTest do
     }
 
     assert %{
-      model: "text-model",
-      messages: ["hello"],
-      max_tokens: 10
-    } == TestRequest.prepare(params, [:max_tokens], [:model, :messages])
+             model: "text-model",
+             messages: ["hello"],
+             max_tokens: 10
+           } == TestRequest.prepare(params, [:max_tokens], [:model, :messages])
   end
 
   test ".prepare raises if required fields are missing" do
@@ -107,9 +107,9 @@ defmodule ExOpenAi.RequestTest do
     }
 
     assert %{
-      model: "text-model",
-      messages: ["hello"],
-      max_tokens: 10
-    } == TestRequest.delete_invalid_fields(params, [:model, :messages, :max_tokens])
+             model: "text-model",
+             messages: ["hello"],
+             max_tokens: 10
+           } == TestRequest.delete_invalid_fields(params, [:model, :messages, :max_tokens])
   end
 end

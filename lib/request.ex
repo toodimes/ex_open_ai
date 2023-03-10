@@ -13,7 +13,8 @@ defmodule ExOpenAi.Request do
       """
       @spec do_change(map, attributes :: list) :: map
       def do_change(map, attributes) do
-        incoming_map = attributes
+        incoming_map =
+          attributes
           |> Enum.into(%{})
 
         Map.merge(map, incoming_map)
@@ -24,8 +25,9 @@ defmodule ExOpenAi.Request do
       """
       @spec has_required_fields?(map, fields :: list) :: boolean
       def has_required_fields?(map, fields) do
-        keys = map
-        |> Map.keys()
+        keys =
+          map
+          |> Map.keys()
 
         Enum.all?(fields, fn field -> field in keys end)
       end

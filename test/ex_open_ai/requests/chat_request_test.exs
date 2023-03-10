@@ -13,11 +13,11 @@ defmodule ExOpenAi.ChatRequestTest do
     }
 
     assert %{
-      messages: [
-        %{content: "hello"},
-        %{content: "world"}
-      ]
-    } == ChatRequest.do_append(params, %{content: "world"})
+             messages: [
+               %{content: "hello"},
+               %{content: "world"}
+             ]
+           } == ChatRequest.do_append(params, %{content: "world"})
   end
 
   test ".create delegates to Api.create" do
@@ -28,6 +28,7 @@ defmodule ExOpenAi.ChatRequestTest do
           %{content: "hello"}
         ]
       }
+
       ChatRequest.create(params)
       assert called(Api.create(Chat, params, []))
     end

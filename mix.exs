@@ -37,7 +37,7 @@ defmodule ExOpenAi.MixProject do
   defp docs do
     [
       extras: [
-        "LICENSE": [title: "License"],
+        LICENSE: [title: "License"],
         "README.md": [title: "Overview"]
       ],
       main: "readme",
