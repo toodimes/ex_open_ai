@@ -1,3 +1,2 @@
 defmodule ExOpenAi do
-
 end
