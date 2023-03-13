@@ -20,8 +20,9 @@ To access the OpenAI API you will need to set the following environment or runti
 
 ```elixir
 config :ex_open_ai, 
-  api_key: "YOUR_API_KEY_FROM_OPEN_AI"
-  organization: "OPTIONAL_ORGANIZATION" # optional
+  api_key: "YOUR_API_KEY_FROM_OPEN_AI",
+  organization: "OPTIONAL_ORGANIZATION", # optional
+  timeout: 30_000 # optional, default is 25_000
 ```
 
 You can also use the `{:system, "VARIABLE_NAME"}` format.
@@ -46,7 +47,7 @@ iex> ExOpenAi.Completion.create(%{model: "text-davinci-003", prompt: "Tell me a 
 ```
 
 ## Requests
-Introducing ExOpenAi.Requests.
+### After much discussion the Requests will be deprecated and built into the regular modules as optional functions.
 
 These are modules to help you prepare and make requests that return resources. `ChatRequest` has the `do_append/2` function to add messages to the `Chat` resource. All resources have a `.create/1` function that will take in a map and validate that the required fields are present as well as remove any fields that OpenAi API will not like. 
 
