@@ -31,7 +31,7 @@ defmodule ExOpenAi.Api do
 
     module
     |> URL.infer_url()
-    |> Api.post!(data, options, recv_timeout: @default_timeout)
+    |> Api.post!(data, options, recv_timeout: Config.timeout())
     |> Parser.parse(module, options[:simple])
   end
 

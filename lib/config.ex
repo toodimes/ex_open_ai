@@ -21,6 +21,14 @@ defmodule ExOpenAi.Config do
   def organization, do: from_env(:ex_open_ai, :organization)
 
   @doc """
+  Returns the timeout, set it in `mix.exs`
+  Defaults to 25_000
+
+    config :ex_open_ai, timeout: 10_000
+  """
+  def timeout, do: from_env(:ex_open_ai, :timeout, 25_000)
+
+  @doc """
   A wrapper around `Application.get_env/2`, providing automatic support for `{:system, "VARIABLE"}`.
   """
   def from_env(app, key, default \\ nil)
