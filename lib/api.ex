@@ -52,7 +52,7 @@ defmodule ExOpenAi.Api do
 
   This function is used to create a stream with the specified module, process ID, data, and options. This enables efficient handling of streaming data from the OpenAI API.
   """
-  @spec create_stream(atom, data :: list | map, list) :: Stream.t()
+  @spec create_stream(atom, data :: list | map, list) :: any()
   def create_stream(module, data, options \\ []) do
     data = cond do
       is_list(data) -> data
