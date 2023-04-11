@@ -5,7 +5,7 @@ defmodule ExOpenAi.ResourceTest do
 
   defmodule TestResource do
     defstruct choices: nil, object: nil, id: nil
-    use ExOpenAi.Resource, import: [:new, :create]
+    use ExOpenAi.Resource, import: [:new, :create, :create_stream]
     def keep_it_simple(response, true), do: Enum.map(response.choices, &Map.get(&1, :text))
     def keep_it_simple(response, _), do: response
   end
@@ -32,6 +32,13 @@ defmodule ExOpenAi.ResourceTest do
     with_mock Api, create: fn _, _, _ -> nil end do
       TestResource.create(prompt: "value")
       assert called(Api.create(TestResource, [prompt: "value"], []))
+    end
+  end
+
+  test ".create_stream delegates to Api.create_stream" do
+    with_mock Api, create_stream: fn _, _, _ -> nil end do
+      TestResource.create_stream(prompt: "value")
+      assert called(Api.create_stream(TestResource, [prompt: "value"], []))
     end
   end
 

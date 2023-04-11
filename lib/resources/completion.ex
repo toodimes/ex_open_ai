@@ -5,9 +5,16 @@ defmodule ExOpenAi.Completion do
   - [OpenAI API Docs](https://platform.openai.com/docs/api-reference/completions)
 
   ## Examples
-  TODO: EXAMPLES
+      iex> params = %{
+      ...>   model: "text-model",
+      ...>   prompt: "tell me a joke",
+      ...>   max_tokens: 500
+      ...> }
+      iex> ExOpenAi.Completion.create(params)
+      {:ok, %ExOpenAi.Completion{...}}
 
-  TODO: ENFORCE REQUIRED FIELDS
+      iex> ExOpenAi.Completion.create(%{})
+      {:error, %{}}
   """
   defstruct id: nil,
             object: nil,
@@ -25,7 +32,7 @@ defmodule ExOpenAi.Completion do
           usage: map()
         }
 
-  use ExOpenAi.Resource, import: [:new, :create]
+  use ExOpenAi.Resource, import: [:new, :create, :create_stream]
 
   def keep_it_simple(response, true) do
     response

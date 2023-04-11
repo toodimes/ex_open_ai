@@ -6,6 +6,13 @@ defmodule ExOpenAi.Edit do
 
   ## Examples
   """
+  @type t :: %__MODULE__{
+          object: String.t(),
+          created: integer(),
+          choices: list(),
+          usage: map()
+        }
+
   defstruct object: nil,
             created: nil,
             choices: nil,

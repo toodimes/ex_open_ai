@@ -33,10 +33,17 @@ defmodule ExOpenAi.Parser do
       ...> ExOpenAi.Parser.parse(response, %{}, nil)
       {:ok, %{"id" => "cmpl-uqkvlQyYK7bGYrRHQ0eXlWi7"}}
   """
-  @spec parse(HTTPoison.Response.t(), module, boolean() | nil) :: success | error
+  @spec parse(HTTPoison.Response.t() | String.t(), module, boolean() | nil) :: success | error
   def parse(response, map, _simple)
       when is_map(map) and not :erlang.is_map_key(:__struct__, map) do
     handle_errors(response, fn body -> Jason.decode!(body) end)
+  end
+
+  def parse(response, module, simple) when is_binary(response) do
+    handle_errors(response, fn body ->
+      struct(module, Jason.decode!(body, keys: :atoms))
+      |> module.keep_it_simple(simple)
+    end)
   end
 
   def parse(response, module, simple) do
@@ -45,6 +52,8 @@ defmodule ExOpenAi.Parser do
       |> module.keep_it_simple(simple)
     end)
   end
+
+  defp handle_errors(response, fun) when is_binary(response), do: {:ok, fun.(response)}
 
   defp handle_errors(response, fun) do
     case response do

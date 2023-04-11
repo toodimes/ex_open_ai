@@ -32,7 +32,7 @@ defmodule ExOpenAi.Chat do
             choices: nil,
             usage: nil
 
-  use ExOpenAi.Resource, import: [:new, :create]
+  use ExOpenAi.Resource, import: [:new, :create, :create_stream]
 
   @spec keep_it_simple(map, boolean()) :: list() | map()
   def keep_it_simple(response, true) do

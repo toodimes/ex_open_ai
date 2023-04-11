@@ -51,6 +51,22 @@ defmodule ExOpenAi.ApiTest do
     end)
   end
 
+  test ".create_stream should return a Stream reference" do
+    stream = Api.create_stream(Resource, prompt: "value")
+
+    for chunk <- stream do
+      with_fixture(:post!, "", fn ->
+        assert {:ok,
+                %Resource{
+                  choices: nil,
+                  model: nil,
+                  object: nil,
+                  created: nil
+                }} == chunk
+      end)
+    end
+  end
+
   ###
   # API Tests
   ###

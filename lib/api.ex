@@ -10,10 +10,8 @@ defmodule ExOpenAi.Api do
   alias ExOpenAi.Config
   alias ExOpenAi.Parser
   alias ExOpenAi.URLGenerator, as: URL
+  alias ExOpenAi.StreamProcessor
   alias __MODULE__
-
-  # Image generation can take some time, so we need to increase the timeout
-  @default_timeout 25_000
 
   @type data :: map | list
 
@@ -33,6 +31,45 @@ defmodule ExOpenAi.Api do
     |> URL.infer_url()
     |> Api.post!(data, options, recv_timeout: Config.timeout())
     |> Parser.parse(module, options[:simple])
+  end
+
+  @doc """
+  Creates a stream using the provided module, data, and options.
+
+  The stream is created using the `Stream.resource/3` function, where the initial function posts the data with `Api.post!/4`, the intermediate function processes the async response with `StreamProcessor.handle_async_response/2`, and the after function closes the async response with `StreamProcessor.close_async_response/1`.
+
+  ## Parameters
+
+    * `module` - The module to be used for handling the data stream.
+    * `data` - A keyword list containing the data to be sent in the request.
+    * `options` - An optional keyword list of additional options for the request.
+
+  ## Returns
+
+    * A stream that is created using the `Stream.resource/3` function, allowing processing of the data as it is received.
+
+  ## Usage
+
+  This function is used to create a stream with the specified module, process ID, data, and options. This enables efficient handling of streaming data from the OpenAI API.
+  """
+  @spec create_stream(atom, data :: list | map, list) :: Stream.t()
+  def create_stream(module, data, options \\ []) do
+    data = cond do
+      is_list(data) -> data
+        |> Keyword.put(:stream, true)
+      is_map(data) -> data
+        |> Map.put(:stream, true)
+    end
+    |> format_data()
+
+    url = module
+    |> URL.infer_url()
+
+    Stream.resource(
+      fn -> Api.post!(url, data, options, stream_to: self(), async: :once, recv_timeout: Config.timeout()) end,
+      &(StreamProcessor.handle_async_response(&1, module)),
+      &StreamProcessor.close_async_response/1
+    )
   end
 
   @doc """
