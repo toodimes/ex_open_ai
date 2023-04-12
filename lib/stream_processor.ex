@@ -46,6 +46,14 @@ defmodule ExOpenAi.StreamProcessor do
     end
   end
 
+  defp parse_chunk("{\n    \"error\":" <> _rest = res, resp, _module) do
+    {[{:error, Jason.decode!(res), 400}], resp}
+  end
+
+  defp parse_chunk("data: [DONE]" <> _rest, resp, _module) do
+    {[{:done, ""}], resp}
+  end
+
   defp parse_chunk(chunk, resp, module) do
     chunk = chunk
     |> String.split("data:")
