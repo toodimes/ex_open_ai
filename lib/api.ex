@@ -86,18 +86,22 @@ defmodule ExOpenAi.Api do
   @doc """
   Create with a file upload.
   """
-  @spec create_file(atom, data :: list | map, list) :: Parser.success() | Parser.error()
-  def create_file(module, data, options \\ []) do
+  @spec create_audio(atom, data :: list | map, list) :: Parser.success() | Parser.error()
+  def create_audio(module, data, options \\ []) do
     file = Keyword.get(data, :file)
+
+    additional_data =
+      data
+      |> Keyword.delete(:file)
+      |> Enum.map(fn {k, v} -> {"#{k}", v} end)
 
     data =
       {:multipart,
        [
-         {"model", "whisper-1"},
          {:file, file,
           {"form-data",
            [{:name, "file"}, {:filename, Path.basename(ensure_valid_filename(file))}]}, []}
-       ]}
+       ] ++ additional_data}
 
     module
     |> URL.infer_url()

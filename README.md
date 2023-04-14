@@ -131,6 +131,8 @@ As of initial release the following resources are supported with more to come:
 - [Edits](https://platform.openai.com/docs/api-reference/edits)
 - [Embeddings](https://platform.openai.com/docs/api-reference/embeddings)
 - [Image Generation](https://platform.openai.com/docs/api-reference/images/create)
+- [Whisper](https://platform.openai.com/docs/api-reference/audio/create)
+- [Translation](https://platform.openai.com/docs/api-reference/audio/create)
 
 ## Copyright and License
 

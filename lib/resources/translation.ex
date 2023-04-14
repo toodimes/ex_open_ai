@@ -1,4 +1,4 @@
-defmodule ExOpenAi.Whisper do
+defmodule ExOpenAi.Translation do
   @moduledoc """
 
   """
