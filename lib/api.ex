@@ -54,22 +54,55 @@ defmodule ExOpenAi.Api do
   """
   @spec create_stream(atom, data :: list | map, list) :: any()
   def create_stream(module, data, options \\ []) do
-    data = cond do
-      is_list(data) -> data
-        |> Keyword.put(:stream, true)
-      is_map(data) -> data
-        |> Map.put(:stream, true)
-    end
-    |> format_data()
+    data =
+      cond do
+        is_list(data) ->
+          data
+          |> Keyword.put(:stream, true)
 
-    url = module
-    |> URL.infer_url()
+        is_map(data) ->
+          data
+          |> Map.put(:stream, true)
+      end
+      |> format_data()
+
+    url =
+      module
+      |> URL.infer_url()
 
     Stream.resource(
-      fn -> Api.post!(url, data, options, stream_to: self(), async: :once, recv_timeout: Config.timeout()) end,
-      &(StreamProcessor.handle_async_response(&1, module)),
+      fn ->
+        Api.post!(url, data, options,
+          stream_to: self(),
+          async: :once,
+          recv_timeout: Config.timeout()
+        )
+      end,
+      &StreamProcessor.handle_async_response(&1, module),
       &StreamProcessor.close_async_response/1
     )
+  end
+
+  @doc """
+  Create with a file upload.
+  """
+  @spec create_file(atom, data :: list | map, list) :: Parser.success() | Parser.error()
+  def create_file(module, data, options \\ []) do
+    file = Keyword.get(data, :file)
+
+    data =
+      {:multipart,
+       [
+         {"model", "whisper-1"},
+         {:file, file,
+          {"form-data",
+           [{:name, "file"}, {:filename, Path.basename(ensure_valid_filename(file))}]}, []}
+       ]}
+
+    module
+    |> URL.infer_url()
+    |> Api.post!(data, options, recv_timeout: Config.timeout())
+    |> Parser.parse(module, options[:simple])
   end
 
   @doc """
@@ -111,6 +144,10 @@ defmodule ExOpenAi.Api do
   end
 
   def format_data(data) when is_map(data), do: Jason.encode!(data)
+
+  def ensure_valid_filename(filename) do
+    URI.encode(filename)
+  end
 
   ###
   # HTTPoison API

@@ -55,11 +55,12 @@ defmodule ExOpenAi.StreamProcessor do
   end
 
   defp parse_chunk(chunk, resp, module) do
-    chunk = chunk
-    |> String.split("data:")
-    |> Enum.map(&String.trim/1)
-    |> Enum.reject(&(&1 == ""))
-    |> Enum.map(& decode_chunk(&1, module))
+    chunk =
+      chunk
+      |> String.split("data:")
+      |> Enum.map(&String.trim/1)
+      |> Enum.reject(&(&1 == ""))
+      |> Enum.map(&decode_chunk(&1, module))
 
     {chunk, resp}
   end

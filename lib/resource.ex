@@ -31,9 +31,14 @@ defmodule ExOpenAi.Resource do
         def create(data, options \\ []), do: Api.create(__MODULE__, data, options)
       end
 
-      if  :create_stream in import_functions do
+      if :create_stream in import_functions do
         @spec create_stream(Api.data(), list) :: Parser.parsed_response()
         def create_stream(data, options \\ []), do: Api.create_stream(__MODULE__, data, options)
+      end
+
+      if :create_file in import_functions do
+        @spec create_file(Api.data(), list) :: Parser.parsed_response()
+        def create_file(data, options \\ []), do: Api.create_file(__MODULE__, data, options)
       end
 
       defoverridable Module.definitions_in(__MODULE__, :def)

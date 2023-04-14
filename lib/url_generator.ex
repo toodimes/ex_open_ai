@@ -14,6 +14,7 @@ defmodule ExOpenAi.URLGenerator do
       ["ExOpenAi", "Chat"] -> "https://api.openai.com/v1/chat/completions"
       ["ExOpenAi", "Edit"] -> "https://api.openai.com/v1/edits"
       ["ExOpenAi", "Embedding"] -> "https://api.openai.com/v1/embeddings"
+      ["ExOpenAi", "Whisper"] -> "https://api.openai.com/v1/audio/transcriptions"
       _ -> "https://api.openai.com/v1"
     end
   end
