@@ -16,6 +16,13 @@ defmodule ExOpenAi.ApiTest do
     def keep_it_simple(response, _), do: response
   end
 
+  defmodule FileResource do
+    defstruct text: nil
+
+    def resource_name, do: "FileResources"
+    def keep_it_simple(response, _), do: response
+  end
+
   doctest ExOpenAi.Api
 
   test ".create should return the resource if successful" do
@@ -67,6 +74,24 @@ defmodule ExOpenAi.ApiTest do
     end
   end
 
+  test ".create_with_file should return the file_esource if successful" do
+    json =
+      json_response(
+        %{
+          text: "Hello, World!"
+        },
+        200
+      )
+
+    with_fixture(:post!, json, fn ->
+      assert {:ok,
+              %FileResource{
+                text: "Hello, World!"
+              }} ==
+               Api.create_with_file(FileResource, %{file: "value"}, :file)
+    end)
+  end
+
   ###
   # API Tests
   ###
@@ -79,20 +104,5 @@ defmodule ExOpenAi.ApiTest do
     assert {"Authorization", "Bearer test_key"} in headers
   after
     Application.delete_env(:ex_open_ai, :api_key)
-  end
-
-  test ".format_data converts the map to json" do
-    data = %{prompt: "Hello, World!"}
-    json = Jason.encode!(data)
-
-    assert json == Api.format_data(data)
-  end
-
-  test ".format_data converts the list to json" do
-    map_data = %{prompt: "Hello, World!"}
-    data = [prompt: "Hello, World!"]
-    json = Jason.encode!(map_data)
-
-    assert json == Api.format_data(data)
   end
 end

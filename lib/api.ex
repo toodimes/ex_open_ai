@@ -15,7 +15,6 @@ defmodule ExOpenAi.Api do
   alias ExOpenAi.Parser
   alias ExOpenAi.URLGenerator, as: URL
   alias ExOpenAi.StreamProcessor
-  alias __MODULE__
 
   @type data :: map | list
 
@@ -39,6 +38,7 @@ defmodule ExOpenAi.Api do
     |> Parser.parse(module, options[:simple])
   end
 
+  # %{messages: [%{role: "use", content: "what is 2 + 2?"}], model: "gpt-4-turbo"}
   @doc """
   Creates a stream using the provided module, data, and options.
 
@@ -57,6 +57,8 @@ defmodule ExOpenAi.Api do
   ## Usage
 
   This function is used to create a stream with the specified module, process ID, data, and options. This enables efficient handling of streaming data from the OpenAI API.
+
+  ## Note that this is the only function that uses HTTPoison, Tesla does not have good support for streaming.
   """
   @spec create_stream(atom, data :: list | map, list) :: any()
   def create_stream(module, data, options \\ []) do
@@ -71,6 +73,7 @@ defmodule ExOpenAi.Api do
           |> Map.put(:stream, true)
       end
       |> format_data()
+      |> Jason.encode!()
 
     url =
       module
@@ -78,7 +81,7 @@ defmodule ExOpenAi.Api do
 
     Stream.resource(
       fn ->
-        Api.post!(url, data, options,
+        HTTPoison.post!(url, data, process_request_headers(options),
           stream_to: self(),
           async: :once,
           recv_timeout: Config.timeout()
@@ -102,20 +105,20 @@ defmodule ExOpenAi.Api do
       ExOpenAi.Api.create_with_file(ExOpenAi.Completion, [])
       {:error, %{"model" => "model is required"}, 400}
   """
-  @spec create_with_file(atom, data :: list | map, list) :: Parser.success() | Parser.error()
-  def create_with_file(module, data, options \\ [])
+  @spec create_with_file(atom, data :: list | map, atom, list) :: Parser.success() | Parser.error()
+  def create_with_file(module, data, file_key \\ :atom, options \\ [])
 
-  def create_with_file(module, data, options) when is_list(data) do
+  def create_with_file(module, data, file_key, options) when is_list(data) do
     # path to file
-    file = Keyword.get(data, :file)
+    file = Keyword.get(data, file_key)
 
     mp = Multipart.new()
-    |> Multipart.add_file(file, name: "file")
+    |> Multipart.add_file(file, name: Atom.to_string(file_key))
 
 
     additional_data =
       data
-      |> Keyword.delete(:file)
+      |> Keyword.delete(file_key)
       |> Enum.reduce(mp, fn
         {k, v}, acc when is_list(v) ->
           Enum.reduce(v, acc, fn v, acc -> Multipart.add_field(acc, "#{k}[]", v) end)
@@ -132,8 +135,8 @@ defmodule ExOpenAi.Api do
     |> Parser.parse(module, options[:simple])
   end
 
-  def create_with_file(module, data, options) when is_map(data) do
-    create_with_file(module, Map.to_list(data), options)
+  def create_with_file(module, data, file_key, options) when is_map(data) do
+    create_with_file(module, Map.to_list(data), file_key, options)
   end
 
   @doc """
@@ -223,7 +226,6 @@ defmodule ExOpenAi.Api do
   def format_data(data) when is_list(data) do
     data
     |> Map.new()
-    # |> Jason.encode!()
   end
 
   def format_data(data) when is_map(data), do: data
@@ -243,6 +245,7 @@ defmodule ExOpenAi.Api do
 
   def client() do
     [
+      {Tesla.Middleware.Timeout, timeout: Config.timeout()},
       {Tesla.Middleware.Headers, process_request_headers()},
       Tesla.Middleware.EncodeJson
     ]

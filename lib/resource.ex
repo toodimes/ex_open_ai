@@ -37,8 +37,8 @@ defmodule ExOpenAi.Resource do
       end
 
       if :create_with_file in import_functions do
-        @spec create_with_file(Api.data(), list) :: Parser.parsed_response()
-        def create_with_file(data, options \\ []), do: Api.create_with_file(__MODULE__, data, options)
+        @spec create_with_file(Api.data(), atom(), list) :: Parser.parsed_response()
+        def create_with_file(data, file_key, options \\ []), do: Api.create_with_file(__MODULE__, data, options)
       end
 
       if :list in import_functions do

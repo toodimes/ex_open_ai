@@ -1,7 +1,7 @@
 defmodule ExOpenAi.MixProject do
   use Mix.Project
 
-  @version "1.0.0"
+  @version "2.0.0"
 
   def project do
     [
@@ -27,6 +27,7 @@ defmodule ExOpenAi.MixProject do
   defp deps do
     [
       {:ex_doc, "~> 0.27", only: [:dev, :test], runtime: false},
+      # HTTPoison is only used for streaming responses. Tesla does not have satisfactory support for streaming responses.
       {:httpoison, "~> 2.0"},
       {:jason, "~> 1.2"},
       {:mock, "~> 0.3", only: :test},

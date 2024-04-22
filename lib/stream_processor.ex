@@ -46,6 +46,12 @@ defmodule ExOpenAi.StreamProcessor do
     end
   end
 
+  def handle_async_response(other) do
+    other
+    |> IO.inspect(label: " #{List.last(String.split(__ENV__.file, "/"))}:#{__ENV__.line} ")
+    {:halt, other}
+  end
+
   defp parse_chunk("{\n    \"error\":" <> _rest = res, resp, _module) do
     {[{:error, Jason.decode!(res), 400}], resp}
   end
