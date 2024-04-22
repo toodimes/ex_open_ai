@@ -5,7 +5,11 @@ defmodule ExOpenAi.Api do
   Provides a wrapper around Httpoison for making requests to the OpenAI API.
   """
 
-  use HTTPoison.Base
+  # use HTTPoison.Base
+
+  use Tesla
+
+  alias Tesla.Multipart
 
   alias ExOpenAi.Config
   alias ExOpenAi.Parser
@@ -27,9 +31,11 @@ defmodule ExOpenAi.Api do
   def create(module, data, options \\ []) do
     data = format_data(data)
 
-    module
+    url = module
     |> URL.infer_url()
-    |> Api.post!(data, options, recv_timeout: Config.timeout())
+
+    client()
+    |> post!(url, data, options)
     |> Parser.parse(module, options[:simple])
   end
 
@@ -85,28 +91,101 @@ defmodule ExOpenAi.Api do
 
   @doc """
   Create with a file upload.
+
+  Thing to note:
+  - The `file` parameter is required
+  - Additional data that has a list of binaries in it is currently supported. But if the nature of the form shifts so that nested data within a value may not work.
+
+  ## Examples
+      ExOpenAi.Api.create_with_file(ExOpenAi.Completion, [prompt: "tell me a joke", max_tokens: 500])
+      {:ok, %Completion{ ... }}
+      ExOpenAi.Api.create_with_file(ExOpenAi.Completion, [])
+      {:error, %{"model" => "model is required"}, 400}
   """
-  @spec create_audio(atom, data :: list | map, list) :: Parser.success() | Parser.error()
-  def create_audio(module, data, options \\ []) do
+  @spec create_with_file(atom, data :: list | map, list) :: Parser.success() | Parser.error()
+  def create_with_file(module, data, options \\ [])
+
+  def create_with_file(module, data, options) when is_list(data) do
+    # path to file
     file = Keyword.get(data, :file)
+
+    mp = Multipart.new()
+    |> Multipart.add_file(file, name: "file")
+
 
     additional_data =
       data
       |> Keyword.delete(:file)
-      |> Enum.map(fn {k, v} -> {"#{k}", v} end)
+      |> Enum.reduce(mp, fn
+        {k, v}, acc when is_list(v) ->
+          Enum.reduce(v, acc, fn v, acc -> Multipart.add_field(acc, "#{k}[]", v) end)
+        {k, v}, acc ->
+          acc
+          |> Multipart.add_field(k, v)
+      end)
 
-    data =
-      {:multipart,
-       [
-         {:file, file,
-          {"form-data",
-           [{:name, "file"}, {:filename, Path.basename(ensure_valid_filename(file))}]}, []}
-       ] ++ additional_data}
-
-    module
+    url = module
     |> URL.infer_url()
-    |> Api.post!(data, options, recv_timeout: Config.timeout())
+
+    client()
+    |> post!(url, additional_data, options)
     |> Parser.parse(module, options[:simple])
+  end
+
+  def create_with_file(module, data, options) when is_map(data) do
+    create_with_file(module, Map.to_list(data), options)
+  end
+
+  @doc """
+  List all the resource in the OpenAI API.
+
+  ## Examples
+
+      ExOpenAi.Api.list(ExOpenAi.Completion)
+      {:ok, [%Completion{ ... }]}
+  """
+  @spec list(atom, list) :: Parser.success() | Parser.error()
+  def list(module, options \\ []) do
+    url = module
+    |> URL.infer_url()
+
+    client()
+    |> get!(url, options)
+    |> Parser.parse_list(module, options[:simple])
+  end
+
+  @doc """
+  Retrieve a resource from the OpenAI API.
+
+  ## Examples
+      ExOpenAi.Api.retrieve(ExOpenAi.Modle, "gpt-4-turbo")
+      {:ok, %Completion{ ... }}
+  """
+  @spec retrieve(atom, String.t(), list) :: Parser.success() | Parser.error()
+  def retrieve(module, id, options \\ []) do
+    url = module
+    |> URL.infer_url()
+
+    client()
+    |> get!(url <> "/" <> id, options)
+    |> Parser.parse(module, options[:simple])
+  end
+
+  @doc """
+  Delete a resource from the OpenAI API.
+
+  ## Examples
+      ExOpenAi.Api.delete(ExOpenAi.Modle, "gpt-4-turbo")
+      {:ok, %Completion{ ... }}
+  """
+  @spec remove(atom, String.t(), list) :: Parser.success() | Parser.error()
+  def remove(module, id, options \\ []) do
+    url = module
+    |> URL.infer_url()
+
+    client()
+    |> delete!(url <> "/" <> id, options)
+    |> Parser.parse_delete()
   end
 
   @doc """
@@ -144,21 +223,29 @@ defmodule ExOpenAi.Api do
   def format_data(data) when is_list(data) do
     data
     |> Map.new()
-    |> Jason.encode!()
+    # |> Jason.encode!()
   end
 
-  def format_data(data) when is_map(data), do: Jason.encode!(data)
+  def format_data(data) when is_map(data), do: data
 
   def ensure_valid_filename(filename) do
     URI.encode(filename)
   end
 
   ###
-  # HTTPoison API
+  # TESLA API
   ###
   def process_request_headers(headers \\ []) do
     headers
     |> Keyword.put(:"Content-Type", "application/json")
     |> auth_header({Config.api_key(), Config.organization()})
+  end
+
+  def client() do
+    [
+      {Tesla.Middleware.Headers, process_request_headers()},
+      Tesla.Middleware.EncodeJson
+    ]
+    |> Tesla.client()
   end
 end

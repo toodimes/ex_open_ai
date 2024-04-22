@@ -36,9 +36,24 @@ defmodule ExOpenAi.Resource do
         def create_stream(data, options \\ []), do: Api.create_stream(__MODULE__, data, options)
       end
 
-      if :create_audio in import_functions do
-        @spec create_audio(Api.data(), list) :: Parser.parsed_response()
-        def create_audio(data, options \\ []), do: Api.create_audio(__MODULE__, data, options)
+      if :create_with_file in import_functions do
+        @spec create_with_file(Api.data(), list) :: Parser.parsed_response()
+        def create_with_file(data, options \\ []), do: Api.create_with_file(__MODULE__, data, options)
+      end
+
+      if :list in import_functions do
+        @spec list(list) :: Parser.parsed_response()
+        def list(options \\ []), do: Api.list(__MODULE__, options)
+      end
+
+      if :retrieve in import_functions do
+        @spec retrieve(String.t(), list) :: Parser.parsed_response()
+        def retrieve(id, options \\ []), do: Api.retrieve(__MODULE__, id, options)
+      end
+
+      if :remove in import_functions do
+        @spec remove(String.t(), list) :: Parser.parsed_response()
+        def remove(id, options \\ []), do: Api.remove(__MODULE__, id, options)
       end
 
       defoverridable Module.definitions_in(__MODULE__, :def)

@@ -1,7 +1,7 @@
 defmodule ExOpenAi.MixProject do
   use Mix.Project
 
-  @version "0.1.9"
+  @version "1.0.0"
 
   def project do
     [
@@ -30,7 +30,8 @@ defmodule ExOpenAi.MixProject do
       {:httpoison, "~> 2.0"},
       {:jason, "~> 1.2"},
       {:mock, "~> 0.3", only: :test},
-      {:dialyxir, "~> 1.1.0", only: [:dev, :test], runtime: false}
+      {:dialyxir, "~> 1.1.0", only: [:dev, :test], runtime: false},
+      {:tesla, "~> 1.9"}
     ]
   end
 
