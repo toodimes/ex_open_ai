@@ -7,7 +7,7 @@ defmodule ExOpenAi.NewImageRequest do
 
   use ExOpenAi.Request
 
-  alias ExOpenAi.NewImage
+  alias ExOpenAi.Images.Image
 
   @required_fields ~w(
     prompt
@@ -23,10 +23,10 @@ defmodule ExOpenAi.NewImageRequest do
   @doc """
   Builds the create new image request and validates the required fields.
   """
-  @spec create(params :: map) :: {:ok, NewImage.t()} | {:error, map}
+  @spec create(params :: map) :: {:ok, Image.t()} | {:error, map}
   def create(params) do
     params
     |> prepare(@optional_fields, @required_fields)
-    |> NewImage.create()
+    |> Image.create()
   end
 end
